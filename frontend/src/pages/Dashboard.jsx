@@ -4,19 +4,49 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 const achievements = [
-  { name: "7-Day Streak", icon: "🔥", achieved: true, color: "text-orange-500 bg-orange-100" },
-  { name: "Water Saver", icon: "💧", achieved: true, color: "text-blue-500 bg-blue-100" },
-  { name: "Energy Efficient", icon: "💡", achieved: true, color: "text-yellow-500 bg-yellow-100" },
-  { name: "Plastic-Free Week", icon: "🍃", achieved: false, color: "text-gray-400 bg-gray-100" },
-  { name: "Green Transport", icon: "🚌", achieved: false, color: "text-gray-400 bg-gray-100" },
-  { name: "Eco Champion", icon: "🏆", achieved: false, color: "text-gray-400 bg-gray-100" },
+  {
+    name: "7-Day Streak",
+    icon: "🔥",
+    achieved: true,
+    color: "text-orange-500 bg-orange-100",
+  },
+  {
+    name: "Water Saver",
+    icon: "💧",
+    achieved: true,
+    color: "text-blue-500 bg-blue-100",
+  },
+  {
+    name: "Energy Efficient",
+    icon: "💡",
+    achieved: true,
+    color: "text-yellow-500 bg-yellow-100",
+  },
+  {
+    name: "Plastic-Free Week",
+    icon: "🍃",
+    achieved: false,
+    color: "text-gray-400 bg-gray-100",
+  },
+  {
+    name: "Green Transport",
+    icon: "🚌",
+    achieved: false,
+    color: "text-gray-400 bg-gray-100",
+  },
+  {
+    name: "Eco Champion",
+    icon: "🏆",
+    achieved: false,
+    color: "text-gray-400 bg-gray-100",
+  },
 ];
 
 const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-6 font-sans">
+    <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-50 p-6 font-sans">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10">
         <h1 className="text-4xl font-extrabold text-gray-800">
           EcoGoals 🌱
@@ -29,15 +59,37 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-1">Welcome back, Ankit!</h2>
-        <p className="text-gray-500">Here’s your eco-friendly progress overview:</p>
+        <h2 className="text-2xl font-semibold mb-1">Welcome back, Mahi!</h2>
+        <p className="text-gray-500">
+          Here’s your eco-friendly progress overview:
+        </p>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
         {[
-          { icon: "🌱", value: "7", label: "Current Streak", color: "text-green-500" },
-          { icon: "✅", value: "28", label: "Habits Completed", color: "text-blue-500" },
-          { icon: "🏆", value: "3", label: "Badges Earned", color: "text-yellow-500" },
-          { icon: "🍃", value: "2.1", label: "CO₂ Saved (kg)", color: "text-emerald-500" },
+          {
+            icon: "🌱",
+            value: "7",
+            label: "Current Streak",
+            color: "text-green-500",
+          },
+          {
+            icon: "✅",
+            value: "28",
+            label: "Habits Completed",
+            color: "text-blue-500",
+          },
+          {
+            icon: "🏆",
+            value: "3",
+            label: "Badges Earned",
+            color: "text-yellow-500",
+          },
+          {
+            icon: "🍃",
+            value: "2.1",
+            label: "CO₂ Saved (kg)",
+            color: "text-emerald-500",
+          },
         ].map((stat, i) => (
           <div
             key={i}
@@ -52,7 +104,9 @@ const Dashboard = () => {
 
       {/* Chart Section */}
       <div className="bg-white rounded-2xl shadow-md p-6 mb-12">
-        <h2 className="text-xl font-bold mb-4 text-gray-800">Weekly Progress</h2>
+        <h2 className="text-xl font-bold mb-4 text-gray-800">
+          Weekly Progress
+        </h2>
         <Chart />
       </div>
 
@@ -88,19 +142,25 @@ const Dashboard = () => {
       {/* Action Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         <div
-          className="bg-gradient-to-r from-green-400 to-green-600 text-white rounded-xl p-6 shadow hover:shadow-lg transition cursor-pointer"
+          className="bg-linear-to-r from-green-400 to-green-600 text-white rounded-xl p-6 shadow hover:shadow-lg transition cursor-pointer"
           onClick={() => navigate("/track")}
         >
           <h3 className="font-semibold mb-1">✓ Track Today’s Habits</h3>
-          <p className="text-green-100 text-sm">Check off your daily eco-friendly actions</p>
+          <p className="text-green-100 text-sm">
+            Check off your daily eco-friendly actions
+          </p>
         </div>
         <div className="bg-blue-50 text-blue-800 rounded-xl p-6 shadow hover:shadow-md transition">
           <h3 className="font-semibold mb-1">👥 Join Community</h3>
-          <p className="text-blue-500 text-sm">Share progress and get inspired by others</p>
+          <p className="text-blue-500 text-sm">
+            Share progress and get inspired by others
+          </p>
         </div>
         <div className="bg-yellow-50 text-yellow-800 rounded-xl p-6 shadow hover:shadow-md transition">
           <h3 className="font-semibold mb-1">🔗 Share Progress</h3>
-          <p className="text-yellow-500 text-sm">Inspire friends on social media</p>
+          <p className="text-yellow-500 text-sm">
+            Inspire friends on social media
+          </p>
         </div>
       </div>
 
