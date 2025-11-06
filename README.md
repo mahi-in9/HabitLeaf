@@ -47,7 +47,7 @@ This project focuses on **habit tracking, progress visualization**, and **intera
 
 ---
 
-## ⚙️ Project Structure
+<!-- ## ⚙️ Project Structure
 
 project-root/
 │
@@ -156,7 +156,7 @@ project-root/
 │
 ├── .gitignore # Root ignore (ignore both node_modules)
 ├── README.md # Combined documentation
-└── .env # (optional) Shared environment file
+└── .env # (optional) Shared environment file -->
 
 ---
 
