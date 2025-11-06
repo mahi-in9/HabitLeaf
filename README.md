@@ -2,8 +2,6 @@
 
 **Live Demo:** [HabitLeaf on Vercel](https://habit-leaf-git-main-mahi2.vercel.app/)
 
-![HabitLeaf Preview](./d5dab652-8731-4ec6-9a9f-71531343bb2d.png)
-
 ---
 
 ## 🧭 Overview
