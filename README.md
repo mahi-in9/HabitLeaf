@@ -175,3 +175,8 @@ project-root/
 ### 🏅 Achievements
 
 ![Achievements](screenshot/achievements.png)
+
+
+## 🏷️ Tags / Topics
+`fullstack` • `mern` • `react` • `vite` • `tailwindcss` • `nodejs` • `express` • `mongodb` • `restapi` • `firebase-auth` • `habit-tracker` • `productivity-app` • `sustainability` • `javascript` • `webapp` • `frontend` • `backend` • `vercel`
+
