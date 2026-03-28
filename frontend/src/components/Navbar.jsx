@@ -2,9 +2,11 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import leaf from "../assets/leaf.svg";
+import { useSelector } from "react-redux";
 
-const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
+const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = useSelector((state) => state.user);
 
   const navLinks = [
     { path: "/dashboard", label: "Dashboard" },
@@ -18,12 +20,16 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
       <div className="flex justify-between items-center max-w-7xl mx-auto">
         <div className="flex items-center space-x-3">
           <img src={leaf} alt="logo" className="w-10 h-10 text-gray-900 " />
-          <NavLink to="/">
-            <h1 className="text-gray-900 font-bold text-xl">HabbitLeaf</h1>
-            <p className="text-green-500 text-sm -mt-1">
-              Sustainable Habits Tracker
-            </p>
-          </NavLink>
+          <div className="transition transform hover:scale-x-105">
+            <NavLink to="/">
+              <h1 className="text-gray-900 font-bold text-xl text-shadow-xs ">
+                HabitLeaf
+              </h1>
+              <p className="text-green-500 text-sm -mt-1">
+                Sustainable Habits Tracker
+              </p>
+            </NavLink>
+          </div>
         </div>
         <div className="hidden md:flex space-x-8">
           {navLinks.map((link) => (
@@ -43,20 +49,17 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
         <div className="hidden md:flex items-center space-x-4">
           <button className="bg-green-100 text-green-700 px-4 py-2 rounded-full flex items-center space-x-2 hover:bg-green-200 transition">
             <span>🔥</span>
-            <span>7 day streak</span>
+            <span>create streak</span>
           </button>
 
-          {!isAuthenticated ? (
+          {!user ? (
             <NavLink to="/login">
-              <button className="bg-green-600 text-white px-6 transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer  py-2 rounded-full hover:bg-green-700 transition">
+              <button className="bg-green-600 text-white px-6 transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer  py-2 rounded-full hover:bg-green-700">
                 Sign In
               </button>
             </NavLink>
           ) : (
-            <button
-              onClick={() => setIsAuthenticated(false)}
-              className="bg-red-600 text-white px-6 py-2  transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer rounded-full hover:bg-red-700 transition"
-            >
+            <button className="bg-red-600 text-white px-6 py-2  transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer rounded-full hover:bg-red-700">
               Logout
             </button>
           )}
@@ -90,19 +93,18 @@ const Navbar = ({ isAuthenticated, setIsAuthenticated }) => {
               <span>7 day streak</span>
             </button>
 
-            {!isAuthenticated ? (
+            {!user ? (
               <NavLink to="/login" onClick={() => setIsOpen(false)}>
-                <button className="w-full bg-green-600 transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer  text-white px-6 py-2 rounded-full hover:bg-green-700 transition">
+                <button className="w-full bg-green-600 transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer  text-white px-6 py-2 rounded-full hover:bg-green-700">
                   Sign In
                 </button>
               </NavLink>
             ) : (
               <button
                 onClick={() => {
-                  setIsAuthenticated(false);
                   setIsOpen(false);
                 }}
-                className="w-full bg-red-600 text-white transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer px-6 py-2 rounded-full hover:bg-red-700 transition"
+                className="w-full bg-red-600 text-white transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer px-6 py-2 rounded-full hover:bg-red-700"
               >
                 Logout
               </button>

@@ -8,7 +8,8 @@ pnpm-debug.log*
 lerna-debug.log*
 
 # Dependency directory (DO NOT push to GitHub)
-node_modules/
+node_modules
+.env
 
 # Build output
 dist/

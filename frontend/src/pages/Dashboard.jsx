@@ -2,6 +2,7 @@ import React from "react";
 import Chart from "../components/Chart";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const achievements = [
   {
@@ -43,6 +44,8 @@ const achievements = [
 ];
 
 const Dashboard = () => {
+  const { user } = useSelector((state) => state.user);
+  console.log(user);
   const navigate = useNavigate();
 
   return (
@@ -59,7 +62,7 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-1">Welcome back, Mahi!</h2>
+        <h2 className="text-2xl font-semibold mb-1">Welcome back, {}!</h2>
         <p className="text-gray-500">
           Here’s your eco-friendly progress overview:
         </p>

@@ -4,16 +4,18 @@ const {
   getHabits,
   updateHabit,
   deleteHabit,
-  toggleCompleteToday
+  markHabitComplete,
 } = require("../controllers/habit.controller");
-const authenticateJWT = require("../middlewares/authenticateJWT");
+const authMiddleware = require("../middlewares/auth.middleware");
 
 const router = express.Router();
 
-router.post("/", authenticateJWT, createHabit);
-router.get("/", authenticateJWT, getHabits);
-router.put("/:id", authenticateJWT, updateHabit);
-router.delete("/:id", authenticateJWT, deleteHabit);
-router.post("/:id/toggle", authenticateJWT, toggleCompleteToday);
+router.use(authMiddleware);
+
+router.post("/", createHabit);
+router.get("/", getHabits);
+router.put("/:id", updateHabit);
+router.delete("/:id", deleteHabit);
+router.patch("/:id/complete", markHabitComplete);
 
 module.exports = router;

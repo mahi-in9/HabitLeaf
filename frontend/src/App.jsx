@@ -13,51 +13,37 @@ import ResetPassword from "./pages/ResetPassword";
 import Footer from "./components/Footer";
 import NotFoundPage from "./pages/NotFoundPage";
 
-const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    () => localStorage.getItem("isAuthenticated") === "true"
-  );
+import { useDispatch } from "react-redux";
+import { fetchUser } from "./app/slices/userSlice";
+import { getDashboardData } from "./app/slices/dashboardSlice";
 
+function App() {
+  const dispatch = useDispatch();
   useEffect(() => {
-    localStorage.setItem("isAuthenticated", isAuthenticated);
-  }, [isAuthenticated]);
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      dispatch(fetchUser());
+      dispatch(getDashboardData());
+    }
+  }, [dispatch]);
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Navbar
-        isAuthenticated={isAuthenticated}
-        setIsAuthenticated={setIsAuthenticated}
-      />
-      <div className="p-1">
+      <Navbar />
+      <div className="p-1 ">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
-          <Route
-            path="/login"
-            element={<Login setIsAuthenticated={setIsAuthenticated} />}
-          />
+          <Route path="/login" element={<Login />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
 
           {/* Protected */}
-          <Route
-            path="/dashboard"
-            element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/myhabit"
-            element={isAuthenticated ? <MyHabbit /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/community"
-            element={isAuthenticated ? <Community /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/achievements"
-            element={
-              isAuthenticated ? <Achievements /> : <Navigate to="/login" />
-            }
-          />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/myhabit" element={<MyHabbit />} />
+          <Route path="/community" element={<Community />} />
+          <Route path="/achievements" element={<Achievements />} />
           {/* Catch-all */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
@@ -65,6 +51,6 @@ const App = () => {
       <Footer />
     </div>
   );
-};
+}
 
 export default App;

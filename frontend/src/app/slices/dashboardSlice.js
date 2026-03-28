@@ -1,0 +1,48 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import api from "../../api/api";
+
+// 🔥 Async thunk
+export const getDashboardData = createAsyncThunk(
+  "dashboard/analytics",
+  async (_, thunkAPI) => {
+    try {
+      const res = await api.get("/api/status/dashboard");
+      return res.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error?.response?.data || { message: "Failed to fetch dashboard" },
+      );
+    }
+  },
+);
+
+// 🔥 Initial state
+const initialState = {
+  data: null,
+  loading: false,
+  error: null,
+};
+
+// 🔥 Slice
+const dashboardSlice = createSlice({
+  name: "dashboard",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getDashboardData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getDashboardData.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(getDashboardData.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Something went wrong";
+      });
+  },
+});
+
+export default dashboardSlice.reducer;

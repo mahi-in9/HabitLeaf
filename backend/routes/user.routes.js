@@ -1,8 +1,8 @@
 // routes/user.routes.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const User = require('../models/User');
-const authenticateJWT = require('../middlewares/authenticateJWT');
+const User = require("../models/User");
+const authenticateJWT = require("../middlewares/auth.middleware");
 
 // Allow all authenticated users to get doctors
 router.get("/", authenticateJWT, async (req, res, next) => {

@@ -2,30 +2,31 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const helmet = require("helmet");
-const morgan = require("morgan");
 
 dotenv.config();
 
 const authRoutes = require("./routes/auth.routes");
 const userRoutes = require("./routes/user.routes");
 const habitRoutes = require("./routes/habit.routes");
+const analyticsRoutes = require("./routes/analytics.route");
+const achievementRoutes = require("./routes/achievement.route");
+const adminAchievement = require("./routes/adminAchievement.route");
 const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
 
 app.use(cors({ origin: process.env.CLIENT_URL || "*" }));
 app.use(express.json());
-app.use(helmet());
-app.use(morgan("dev"));
 
 app.get("/", (req, res) => {
   res.send("🌱 Welcome to HabitLeaf API");
 });
-app.use("/auth", authRoutes);
-app.use("/users", userRoutes);
-app.use("/auth/habits", habitRoutes);
-
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/habits", habitRoutes);
+app.use("/api/status", analyticsRoutes);
+app.use("/api/achievements", achievementRoutes);
+app.use("/api/all-achievements", adminAchievement);
 
 app.use((req, res) => {
   res.status(404).json({ success: false, msg: "Route not found" });
@@ -37,7 +38,9 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/habitleaf");
+    await mongoose.connect(
+      process.env.MONGO_URI || "mongodb://127.0.0.1:27017/habitleaf",
+    );
     console.log(" MongoDB connected");
 
     const server = app.listen(PORT, () => {

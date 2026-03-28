@@ -3,35 +3,44 @@ import { useNavigate } from "react-router-dom";
 import bg from "../assets/herosection.jpg";
 import showEyes from "../assets/eye-show.svg";
 import hideEyes from "../assets/eye-hide.svg";
+import { useDispatch } from "react-redux";
+import { registerUser } from "../app/slices/userSlice";
 
 const Signup = () => {
-  const [message, setMessage] = useState("");
+  const [userData, setUserData] = useState({
+    title: "",
+    email: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState("");
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSignup = async (e) => {
+  const handleChange = (e) => {
+    const { value, name } = e.target;
+
+    setUserData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData);
 
     try {
-      const response = await fetch(`https://habitleaf.onrender.com/auth/signup`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      const result = await response.json();
-      console.log(result);
+      const res = await dispatch(registerUser(userData)).unwrap();
 
-      if (response.ok) {
-        setMessage("🎉 Account created successfully! Redirecting to login...");
-        setTimeout(() => navigate("/login"), 1500);
-      } else {
-        setMessage(result.message || "❌ Signup failed. Try again.");
-      }
+      setUserData({
+        title: "",
+        email: "",
+        password: "",
+      });
+      setMessage(res.message || "Signing up");
+      setTimeout(() => {
+        navigate("/");
+      }, 300);
     } catch (error) {
-      console.error("Error:", error);
-      setMessage("⚠️ Something went wrong. Please try again.");
+      console.log(error);
+      setMessage(error?.message || "Signup failed");
     }
   };
 
@@ -59,27 +68,28 @@ const Signup = () => {
               message.includes("🎉")
                 ? "text-green-600"
                 : message.includes("❌")
-                ? "text-red-600"
-                : "text-yellow-600"
+                  ? "text-red-600"
+                  : "text-yellow-600"
             }`}
           >
             {message}
           </div>
         )}
 
-        <form onSubmit={handleSignup} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name */}
           <div>
             <label
-              htmlFor="name"
+              htmlFor="title"
               className="block text-sm font-medium text-gray-700"
             >
               Name
             </label>
             <input
               type="text"
-              id="name"
-              name="name"
+              name="title"
+              value={userData.title}
+              onChange={handleChange}
               required
               className="mt-1 block w-full px-4 py-2 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900"
             />
@@ -95,7 +105,8 @@ const Signup = () => {
             </label>
             <input
               type="email"
-              id="email"
+              value={userData.email}
+              onChange={handleChange}
               name="email"
               required
               className="mt-1 block w-full px-4 py-2 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900"
@@ -115,6 +126,8 @@ const Signup = () => {
               id="password"
               name="password"
               required
+              value={userData.password}
+              onChange={handleChange}
               className="mt-1 block w-full px-4 py-2 pr-10 border border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900"
             />
             <img
@@ -128,7 +141,7 @@ const Signup = () => {
           {/* Submit button */}
           <button
             type="submit"
-            className="w-full py-2.5 rounded-lg bg-gradient-to-r from-green-600 to-green-500 text-white font-semibold shadow-lg hover:scale-[1.01] transition"
+            className="w-full py-2.5 rounded-lg bg-gradient-to-r from-green-600 to-green-500 text-white active:bg-cyan-700 font-semibold shadow-lg hover:scale-[1.01] transition "
           >
             Sign Up
           </button>
@@ -136,7 +149,10 @@ const Signup = () => {
 
         {/* Already have an account */}
         <div className="mt-6 text-center text-sm">
-          <a href="/login" className="text-gray-800 font-medium hover:underline">
+          <a
+            href="/login"
+            className="text-gray-800 font-medium hover:underline"
+          >
             Already have an account? Log in
           </a>
         </div>
