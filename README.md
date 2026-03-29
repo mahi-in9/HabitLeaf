@@ -1,6 +1,6 @@
 # 🌿 HabitLeaf – Sustainable Habits Tracker
 
-**Live Demo:** [HabitLeaf on Vercel](https://habit-leaf-git-main-mahi2.vercel.app/)
+**Live Demo:** [HabitLeaf on Vercel](https://habit-leaf-one.vercel.app/)
 
 ---
 
