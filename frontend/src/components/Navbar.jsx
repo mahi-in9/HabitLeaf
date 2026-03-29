@@ -3,10 +3,15 @@ import { NavLink } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import leaf from "../assets/leaf.svg";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../app/slices/userSlice";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const navLinks = [
     { path: "/dashboard", label: "Dashboard" },
@@ -59,7 +64,14 @@ const Navbar = () => {
               </button>
             </NavLink>
           ) : (
-            <button className="bg-red-600 text-white px-6 py-2  transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer rounded-full hover:bg-red-700">
+            <button
+              onClick={() => {
+                localStorage.clear();
+                dispatch(logout());
+                navigate("/login");
+              }}
+              className="bg-red-600 text-white px-6 py-2  transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer rounded-full hover:bg-red-700"
+            >
               Logout
             </button>
           )}
@@ -102,7 +114,10 @@ const Navbar = () => {
             ) : (
               <button
                 onClick={() => {
-                  setIsOpen(false);
+                  localStorage.clear();
+                  dispatch(logout());
+                  dispatch(resetAchievements());
+                  navigate("/login");
                 }}
                 className="w-full bg-red-600 text-white transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer px-6 py-2 rounded-full hover:bg-red-700"
               >

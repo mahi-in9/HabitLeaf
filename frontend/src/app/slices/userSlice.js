@@ -42,12 +42,17 @@ const initialState = {
   loading: false,
   user: null,
   error: null,
+  isAuthChecked: false,
 };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.user = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.pending, (state) => {
@@ -84,12 +89,15 @@ const userSlice = createSlice({
         state.loading = false;
         state.user = action.payload;
         state.error = null;
+        state.isAuthChecked = true;
       })
       .addCase(fetchUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.isAuthChecked = true;
       });
   },
 });
 
+export const { logout } = userSlice.actions;
 export default userSlice.reducer;

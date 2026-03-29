@@ -11,6 +11,7 @@ const habitRoutes = require("./routes/habit.routes");
 const analyticsRoutes = require("./routes/analytics.route");
 const achievementRoutes = require("./routes/achievement.route");
 const adminAchievement = require("./routes/adminAchievement.route");
+const dashboardRoutes = require("./routes/dashboard.route");
 const errorHandler = require("./middlewares/errorHandler");
 
 const app = express();
@@ -27,6 +28,7 @@ app.use("/api/habits", habitRoutes);
 app.use("/api/status", analyticsRoutes);
 app.use("/api/achievements", achievementRoutes);
 app.use("/api/all-achievements", adminAchievement);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ success: false, msg: "Route not found" });

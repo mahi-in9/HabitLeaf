@@ -2,18 +2,13 @@ import React, { useEffect, useState } from "react";
 import {
   Trophy,
   Star,
-  Calendar,
-  Droplets,
-  Users,
-  Zap,
   Leaf,
-  Bus,
   Award,
   Target,
   Flame,
-  Globe,
   CheckCircle,
   Trees,
+  Bean,
 } from "lucide-react";
 
 import share from "../assets/share1.svg";
@@ -38,19 +33,23 @@ const achievementIcons = {
   trophy: Trophy,
   star: Star,
   check: CheckCircle,
+  seed: Bean,
 };
 
 const Achievements = () => {
-  const { achievements, loading, error } = useSelector(
+  const { achievements, loading, error, unlockedRecently, stats } = useSelector(
     (state) => state.achievement,
   );
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(evaluateAchievements()).then(() => {
-      dispatch(fetchAchievements());
-    });
+    dispatch(fetchAchievementStats())
+      .then(() => dispatch(fetchAchievements()))
+      .then(() => dispatch(fetchUnlockedAchievements()))
+      .catch((error) => console.log(error));
   }, [dispatch]);
+
+  const totalPoints = achievements.reduce((acc, i) => acc + i.points, 0);
   console.log(achievements);
 
   return (
@@ -72,7 +71,9 @@ const Achievements = () => {
             <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-4">
               <Trophy className="w-6 h-6 text-yellow-600" />
             </div>
-            <div className="text-3xl font-bold text-gray-900 mb-1"></div>
+            <div className="text-3xl font-bold text-gray-900 mb-1">
+              {stats && stats.badgesEarned}
+            </div>
             <div className="text-gray-600 text-sm">Badges Earned</div>
           </div>
 
@@ -80,7 +81,9 @@ const Achievements = () => {
             <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
               <Star className="w-6 h-6 text-green-600" />
             </div>
-            <div className="text-3xl font-bold text-gray-900 mb-1"></div>
+            <div className="text-3xl font-bold text-gray-900 mb-1">
+              {stats && stats.totalPoints}
+            </div>
             <div className="text-gray-600 text-sm">Total Points</div>
           </div>
 
@@ -88,37 +91,14 @@ const Achievements = () => {
             <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
               <Target className="w-6 h-6 text-blue-600" />
             </div>
-            <div className="text-3xl font-bold text-gray-900 mb-1">%</div>
+            <div className="text-3xl font-bold text-gray-900 mb-1">
+              {stats && stats.completionRate}%
+            </div>
             <div className="text-gray-600 text-sm">Completion Rate</div>
           </div>
+        </div>
 
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-purple-100">
-            <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-              <Award className="w-6 h-6 text-purple-600" />
-            </div>
-            <div className="text-3xl font-bold text-gray-900 mb-1"></div>
-            <div className="text-gray-600 text-sm">Global Rank</div>
-          </div>
-        </div>
         {/* Tabs */}
-        <div className="mb-8">
-          <div className="bg-white rounded-2xl p-2 shadow-lg border border-gray-100">
-            <div className="flex space-x-1 overflow-x-auto">
-              {/* {tabs.map(tab => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl whitespace-nowrap transition-colors ${
-                    activeTab === tab.id ? 'bg-green-500 text-white shadow-md' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                  }`}
-                >
-                  
-                  <span className="text-sm font-medium">{tab.name}</span>
-                </button>
-              ))} */}
-            </div>
-          </div>
-        </div>
 
         {/* Earned Badges */}
         <div className="mb-8">
@@ -135,13 +115,6 @@ const Achievements = () => {
                     key={a._id}
                     className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 relative"
                   >
-                    <div className="absolute top-4 right-4">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium border `}
-                      >
-                        {/* {getRarityBadgeText(a.rarity)} */}
-                      </span>
-                    </div>
                     <div
                       className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 bg-green-100 `}
                     >
@@ -160,7 +133,7 @@ const Achievements = () => {
                       </span>
                     </div>
                     <div className="mt-3 text-xs text-green-600">
-                      ✓ Earned on {a.earnedDate}
+                      ✓ Earned on {a.updatedAt.split("T")[0]}
                     </div>
                   </div>
                 );
@@ -207,7 +180,7 @@ const Achievements = () => {
               
             ))} */}
           </div>
-          <div className="mt-8 rounded-2xl shadow-md p-8 bg-gradient-to-r from-green-500 to-green-700 flex flex-col md:flex-row items-center justify-between text-white">
+          <div className="mt-8 rounded-2xl shadow-md p-8 bg-linear-to-r from-green-500 to-green-700 flex flex-col md:flex-row items-center justify-between text-white">
             <div>
               <h2 className="text-2xl font-bold mb-2">Keep Going! 🌟</h2>
               <p className="text-green-100 max-w-md">
@@ -216,16 +189,23 @@ const Achievements = () => {
               </p>
               <div className="flex gap-12 mt-6 text-center">
                 <div>
-                  <p className="text-3xl font-bold">6</p>
+                  <p className="text-3xl font-bold">
+                    {achievements &&
+                      stats &&
+                      achievements.length - stats.badgesEarned}
+                  </p>
                   <p className="text-green-100 text-sm">Badges to unlock</p>
                 </div>
                 <div>
-                  <p className="text-3xl font-bold">3,600</p>
+                  <p className="text-3xl font-bold">{totalPoints}</p>
                   <p className="text-green-100 text-sm">Points available</p>
                 </div>
               </div>
             </div>
-            <button className="mt-6 md:mt-0 px-6 py-3 bg-white text-green-700 font-semibold rounded-lg shadow hover:bg-gray-100 flex items-center space-x-2">
+            <button
+              onClick={handleShare}
+              className="mt-6 md:mt-0 px-6 py-3 bg-white text-green-700 font-semibold rounded-lg shadow hover:bg-gray-100 flex items-center space-x-2"
+            >
               <img src={share} alt="" className="w-7 h-7" />
               <span>Share Achievements</span>
             </button>
@@ -237,3 +217,22 @@ const Achievements = () => {
 };
 
 export default Achievements;
+
+const handleShare = async () => {
+  const shareData = {
+    title: "My Habit Progress 🌱",
+    text: "I'm building eco-friendly habits with HabitLeaf!",
+    url: window.location.href,
+  };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+    } else {
+      await navigator.clipboard.writeText(shareData.url);
+      alert("Link copied to clipboard!");
+    }
+  } catch (err) {
+    console.error("Share failed:", err);
+  }
+};

@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Chart from "../components/Chart";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDashboardData } from "../app/slices/dashboardSlice";
 
 const achievements = [
   {
@@ -11,42 +12,18 @@ const achievements = [
     achieved: true,
     color: "text-orange-500 bg-orange-100",
   },
-  {
-    name: "Water Saver",
-    icon: "💧",
-    achieved: true,
-    color: "text-blue-500 bg-blue-100",
-  },
-  {
-    name: "Energy Efficient",
-    icon: "💡",
-    achieved: true,
-    color: "text-yellow-500 bg-yellow-100",
-  },
-  {
-    name: "Plastic-Free Week",
-    icon: "🍃",
-    achieved: false,
-    color: "text-gray-400 bg-gray-100",
-  },
-  {
-    name: "Green Transport",
-    icon: "🚌",
-    achieved: false,
-    color: "text-gray-400 bg-gray-100",
-  },
-  {
-    name: "Eco Champion",
-    icon: "🏆",
-    achieved: false,
-    color: "text-gray-400 bg-gray-100",
-  },
 ];
 
 const Dashboard = () => {
   const { user } = useSelector((state) => state.user);
-  console.log(user);
+  const { dashboard, loading, error } = useSelector((state) => state.data);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchDashboardData());
+  }, []);
+  console.log(dashboard);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-50 p-6 font-sans">
@@ -62,47 +39,35 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-1">Welcome back, {}!</h2>
+        <h2 className="text-2xl font-semibold mb-1">
+          Welcome back, {user.title}!
+        </h2>
         <p className="text-gray-500">
           Here’s your eco-friendly progress overview:
         </p>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-        {[
-          {
-            icon: "🌱",
-            value: "7",
-            label: "Current Streak",
-            color: "text-green-500",
-          },
-          {
-            icon: "✅",
-            value: "28",
-            label: "Habits Completed",
-            color: "text-blue-500",
-          },
-          {
-            icon: "🏆",
-            value: "3",
-            label: "Badges Earned",
-            color: "text-yellow-500",
-          },
-          {
-            icon: "🍃",
-            value: "2.1",
-            label: "CO₂ Saved (kg)",
-            color: "text-emerald-500",
-          },
-        ].map((stat, i) => (
-          <div
-            key={i}
-            className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center hover:shadow-lg transition"
-          >
-            <span className={`text-3xl mb-2 ${stat.color}`}>{stat.icon}</span>
-            <span className="text-2xl font-bold">{stat.value}</span>
-            <span className="text-gray-500 text-sm">{stat.label}</span>
-          </div>
-        ))}
+        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center hover:shadow-lg transition">
+          <span className={`text-3xl mb-2 $`}>🌱</span>
+          <span className="text-2xl font-bold">
+            {dashboard.summary.activeStreak}
+          </span>
+          <span className="text-gray-500 text-sm">Current Streak</span>
+        </div>
+        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center hover:shadow-lg transition">
+          <span className={`text-3xl mb-2 $`}>✅</span>
+          <span className="text-2xl font-bold">
+            {dashboard.summary.totalCompletions}
+          </span>
+          <span className="text-gray-500 text-sm">Habits Completed</span>
+        </div>
+        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center hover:shadow-lg transition">
+          <span className={`text-3xl mb-2 $`}>🏆</span>
+          <span className="text-2xl font-bold">
+            {dashboard.activity.length}
+          </span>
+          <span className="text-gray-500 text-sm">Badges Earned</span>
+        </div>
       </div>
 
       {/* Chart Section */}

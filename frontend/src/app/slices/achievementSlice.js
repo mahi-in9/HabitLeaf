@@ -61,7 +61,6 @@ const achievementSlice = createSlice({
   name: "achievement",
   initialState: {
     achievements: [],
-    unlocked: [],
     stats: null,
     loading: false,
     error: null,
@@ -96,7 +95,7 @@ const achievementSlice = createSlice({
       .addCase(evaluateAchievements.fulfilled, (state, action) => {
         state.loading = false;
 
-        state.unlockedRecently = action.payload.unlocked || [];
+        state.unlockedRecently = action.payload?.unlocked || [];
       })
       .addCase(evaluateAchievements.rejected, (state, action) => {
         state.loading = false;
@@ -104,7 +103,7 @@ const achievementSlice = createSlice({
       })
 
       .addCase(fetchUnlockedAchievements.fulfilled, (state, action) => {
-        state.unlocked = action.payload;
+        state.unlockedRecently = action.payload;
       })
 
       .addCase(fetchAchievementStats.fulfilled, (state, action) => {

@@ -33,7 +33,6 @@ exports.getAchievements = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
-
 exports.evaluateAchievements = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -47,11 +46,22 @@ exports.evaluateAchievements = async (req, res) => {
       0,
     );
 
-    const maxStreak = Math.max(...habits.map((h) => h.longestStreak || 0), 0);
+    const maxStreak =
+      habits.length > 0
+        ? Math.max(...habits.map((h) => h.longestStreak || 0))
+        : 0;
 
     const achievements = await Achievement.find({ isActive: true });
 
+    const userAchievements = await UserAchievement.find({ user: userId });
+
+    const userAchMap = {};
+    userAchievements.forEach((ua) => {
+      userAchMap[ua.achievement.toString()] = ua;
+    });
+
     const unlocked = [];
+    const bulkOps = [];
 
     for (const ach of achievements) {
       let progress = 0;
@@ -72,32 +82,37 @@ exports.evaluateAchievements = async (req, res) => {
           progress = maxStreak;
           isCompleted = progress >= ach.condition.value;
           break;
-
-        default:
-          break;
       }
 
-      let userAch = await UserAchievement.findOne({
-        user: userId,
-        achievement: ach._id,
-      });
+      const existing = userAchMap[ach._id.toString()];
 
-      if (!userAch) {
-        userAch = new UserAchievement({
-          user: userId,
-          achievement: ach._id,
+      if (isCompleted && !existing?.completed) {
+        unlocked.push({
+          _id: ach._id,
+          title: ach.title,
+          icon: ach.icon,
+          points: ach.points,
+          difficulty: ach.difficulty,
         });
       }
 
-      userAch.progress = progress;
+      bulkOps.push({
+        updateOne: {
+          filter: { user: userId, achievement: ach._id },
+          update: {
+            $set: {
+              progress,
+              completed: isCompleted,
+              ...(isCompleted && { completedAt: new Date() }),
+            },
+          },
+          upsert: true,
+        },
+      });
+    }
 
-      if (isCompleted && !userAch.completed) {
-        userAch.completed = true;
-        userAch.completedAt = new Date();
-        unlocked.push(ach.title);
-      }
-
-      await userAch.save();
+    if (bulkOps.length > 0) {
+      await UserAchievement.bulkWrite(bulkOps);
     }
 
     res.status(200).json({
@@ -114,9 +129,12 @@ exports.getUnlockedAchievements = async (req, res) => {
   try {
     const userId = req.user._id;
 
+    const last24Hours = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    
     const data = await UserAchievement.find({
       user: userId,
       completed: true,
+      completedAt: { $gte: last24Hours },
     }).populate("achievement");
 
     res.status(200).json({ success: true, data });
@@ -129,22 +147,44 @@ exports.getAchievementStats = async (req, res) => {
   try {
     const userId = req.user._id;
 
-    const total = await Achievement.countDocuments({ isActive: true });
+    // Total available achievements
+    const totalAchievements = await Achievement.countDocuments({
+      isActive: true,
+    });
 
-    const completed = await UserAchievement.countDocuments({
+    // Completed achievements
+    const completedAchievements = await UserAchievement.find({
       user: userId,
       completed: true,
-    });
+    }).populate("achievement");
+
+    const badgesEarned = completedAchievements.length;
+
+    // Total points earned
+    const totalPoints = completedAchievements.reduce(
+      (sum, ua) => sum + (ua.achievement?.points || 0),
+      0,
+    );
+
+    // Completion rate %
+    const completionRate = totalAchievements
+      ? Math.round((badgesEarned / totalAchievements) * 100)
+      : 0;
 
     res.status(200).json({
       success: true,
       data: {
-        total,
-        completed,
-        percentage: total ? (completed / total) * 100 : 0,
+        badgesEarned,
+        totalPoints,
+        completionRate,
+        totalAchievements,
       },
     });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(500).json({
+      success: false,
+      message: "Error fetching achievement stats",
+      error: err.message,
+    });
   }
 };

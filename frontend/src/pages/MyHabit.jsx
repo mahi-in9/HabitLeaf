@@ -22,8 +22,6 @@ const MyHabit = () => {
   useEffect(() => {
     dispatch(getHabits());
   }, [dispatch]);
-  console.log(habits);
-  console.log(data);
 
   const toggleComplete = (e) => {
     dispatch(markHabitComplete(e));
