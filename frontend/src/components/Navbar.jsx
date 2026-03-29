@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import leaf from "../assets/leaf.svg";
 import { useSelector } from "react-redux";
@@ -26,19 +26,19 @@ const Navbar = () => {
         <div className="flex items-center space-x-3">
           <img src={leaf} alt="logo" className="w-10 h-10 text-gray-900 " />
           <div className="transition transform hover:scale-x-105">
-            <NavLink to="/">
+            <Link to="/">
               <h1 className="text-gray-900 font-bold text-xl text-shadow-xs ">
                 HabitLeaf
               </h1>
               <p className="text-green-500 text-sm -mt-1">
                 Sustainable Habits Tracker
               </p>
-            </NavLink>
+            </Link>
           </div>
         </div>
         <div className="hidden md:flex space-x-8">
           {navLinks.map((link) => (
-            <NavLink
+            <Link
               key={link.path}
               to={link.path}
               className={({ isActive }) =>
@@ -48,7 +48,7 @@ const Navbar = () => {
               }
             >
               {link.label}
-            </NavLink>
+            </Link>
           ))}
         </div>
         <div className="hidden md:flex items-center space-x-4">
@@ -58,11 +58,11 @@ const Navbar = () => {
           </button>
 
           {!user ? (
-            <NavLink to="/login">
+            <Link to="/login">
               <button className="bg-green-600 text-white px-6 transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer  py-2 rounded-full hover:bg-green-700">
                 Sign In
               </button>
-            </NavLink>
+            </Link>
           ) : (
             <button
               onClick={() => {
@@ -85,7 +85,7 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden bg-white shadow-lg mt-4 rounded-lg p-4 space-y-4">
           {navLinks.map((link) => (
-            <NavLink
+            <Link
               key={link.path}
               to={link.path}
               onClick={() => setIsOpen(false)}
@@ -96,7 +96,7 @@ const Navbar = () => {
               }
             >
               {link.label}
-            </NavLink>
+            </Link>
           ))}
 
           <div className="border-t pt-4 flex flex-col space-y-3">
@@ -106,11 +106,11 @@ const Navbar = () => {
             </button>
 
             {!user ? (
-              <NavLink to="/login" onClick={() => setIsOpen(false)}>
+              <Link to="/login" onClick={() => setIsOpen(false)}>
                 <button className="w-full bg-green-600 transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer  text-white px-6 py-2 rounded-full hover:bg-green-700">
                   Sign In
                 </button>
-              </NavLink>
+              </Link>
             ) : (
               <button
                 onClick={() => {

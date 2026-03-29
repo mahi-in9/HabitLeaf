@@ -31,7 +31,6 @@ const MyHabit = () => {
   if (loading) return <HabitLoader />;
 
   if (error) return <p>{error}</p>;
-  console.log(data);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-100 via-green-50 to-emerald-100 p-6">
@@ -76,7 +75,7 @@ const MyHabit = () => {
             <Calendar className="text-blue-500 mb-2 w-6 h-6" />
             <p className="text-gray-500">This Week</p>
             <p className="font-semibold">
-              {dataLoading && <img src="loader.svg" alt="loader" />}2
+              {dataLoading && <img src="loader.svg" alt="loader" />}
               {data?.weeklyCompleted} habits completed
             </p>
           </div>
