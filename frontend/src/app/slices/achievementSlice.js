@@ -62,7 +62,7 @@ const achievementSlice = createSlice({
   initialState: {
     achievements: [],
     stats: null,
-    loading: false,
+    achiLoading: false,
     error: null,
     unlockedRecently: [], // for UI notifications
   },
@@ -78,27 +78,27 @@ const achievementSlice = createSlice({
     builder
 
       .addCase(fetchAchievements.pending, (state) => {
-        state.loading = true;
+        state.achiLoading = true;
       })
       .addCase(fetchAchievements.fulfilled, (state, action) => {
-        state.loading = false;
+        state.achiLoading = false;
         state.achievements = action.payload;
       })
       .addCase(fetchAchievements.rejected, (state, action) => {
-        state.loading = false;
+        state.achiLoading = false;
         state.error = action.payload;
       })
 
       .addCase(evaluateAchievements.pending, (state) => {
-        state.loading = true;
+        state.achiLoading = true;
       })
       .addCase(evaluateAchievements.fulfilled, (state, action) => {
-        state.loading = false;
+        state.achiLoading = false;
 
         state.unlockedRecently = action.payload?.unlocked || [];
       })
       .addCase(evaluateAchievements.rejected, (state, action) => {
-        state.loading = false;
+        state.achiLoading = false;
         state.error = action.payload;
       })
 

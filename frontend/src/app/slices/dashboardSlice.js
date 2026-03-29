@@ -34,7 +34,7 @@ export const fetchDashboardData = createAsyncThunk(
 const initialState = {
   dashboard: null,
   data: null,
-  loading: false,
+  dataLoading: false,
   error: null,
 };
 
@@ -46,28 +46,28 @@ const dashboardSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getDashboardData.pending, (state) => {
-        state.loading = true;
+        state.dataLoading = true;
         state.error = null;
       })
       .addCase(getDashboardData.fulfilled, (state, action) => {
-        state.loading = false;
+        state.dataLoading = false;
         state.data = action.payload;
       })
       .addCase(getDashboardData.rejected, (state, action) => {
-        state.loading = false;
+        state.dataLoading = false;
         state.error = action.payload?.message || "Something went wrong";
       })
       .addCase(fetchDashboardData.pending, (state) => {
-        state.loading = true;
+        state.dataLoading = true;
         state.error = null;
       })
       .addCase(fetchDashboardData.fulfilled, (state, action) => {
-        state.loading = false;
+        state.dataLoading = false;
         state.dashboard = action.payload;
         state.error = null;
       })
       .addCase(fetchDashboardData.rejected, (state, action) => {
-        state.loading = false;
+        state.dataLoading = false;
         state.error = action.payload?.message || "Something went wrong";
       });
   },

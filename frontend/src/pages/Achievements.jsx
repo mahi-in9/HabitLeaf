@@ -21,6 +21,7 @@ import {
   fetchAchievementStats,
   fetchUnlockedAchievements,
 } from "../app/slices/achievementSlice";
+import handleShare from "../components/Share";
 
 const achievementIcons = {
   tree: Trees,
@@ -37,9 +38,8 @@ const achievementIcons = {
 };
 
 const Achievements = () => {
-  const { achievements, loading, error, unlockedRecently, stats } = useSelector(
-    (state) => state.achievement,
-  );
+  const { achievements, achiLoading, error, unlockedRecently, stats } =
+    useSelector((state) => state.achievement);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -106,6 +106,7 @@ const Achievements = () => {
             Earned Badges
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {achiLoading && <img src="/loader.svg" alt="loader" />}
             {achievements
               .filter((a) => a.completed) // or !a.completed depending on section
               .map((a) => {
@@ -204,7 +205,7 @@ const Achievements = () => {
             </div>
             <button
               onClick={handleShare}
-              className="mt-6 md:mt-0 px-6 py-3 bg-white text-green-700 font-semibold rounded-lg shadow hover:bg-gray-100 flex items-center space-x-2"
+              className="mt-6 md:mt-0 cursor-pointer px-6 py-3 bg-white text-green-700 font-semibold rounded-lg shadow hover:bg-gray-100 flex items-center space-x-2"
             >
               <img src={share} alt="" className="w-7 h-7" />
               <span>Share Achievements</span>
@@ -217,22 +218,3 @@ const Achievements = () => {
 };
 
 export default Achievements;
-
-const handleShare = async () => {
-  const shareData = {
-    title: "My Habit Progress 🌱",
-    text: "I'm building eco-friendly habits with HabitLeaf!",
-    url: window.location.href,
-  };
-
-  try {
-    if (navigator.share) {
-      await navigator.share(shareData);
-    } else {
-      await navigator.clipboard.writeText(shareData.url);
-      alert("Link copied to clipboard!");
-    }
-  } catch (err) {
-    console.error("Share failed:", err);
-  }
-};

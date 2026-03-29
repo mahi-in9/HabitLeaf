@@ -1,146 +1,155 @@
 import React, { useEffect } from "react";
 import Chart from "../components/Chart";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDashboardData } from "../app/slices/dashboardSlice";
+import handleShare from "../components/Share";
 
-const achievements = [
-  {
-    name: "7-Day Streak",
-    icon: "🔥",
-    achieved: true,
-    color: "text-orange-500 bg-orange-100",
-  },
-];
+/* ---------------- Skeleton ---------------- */
+const DashboardSkeleton = () => (
+  <div className="p-6 animate-pulse">
+    <div className="h-8 w-64 bg-gray-300 rounded mb-6"></div>
 
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-10">
+      {[...Array(4)].map((_, i) => (
+        <div key={i} className="bg-white p-6 rounded-xl shadow">
+          <div className="h-6 w-10 bg-gray-300 mb-3 rounded"></div>
+          <div className="h-5 w-16 bg-gray-200 rounded"></div>
+        </div>
+      ))}
+    </div>
+
+    <div className="h-64 bg-white rounded-xl shadow mb-10"></div>
+  </div>
+);
+
+/* ---------------- Error UI ---------------- */
+const ErrorUI = ({ error }) => (
+  <div className="p-6 text-center text-red-500">
+    Failed to load dashboard: {error}
+  </div>
+);
+
+/* ---------------- Stat Card ---------------- */
+const StatCard = ({ icon, value, label }) => (
+  <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center hover:shadow-lg transition">
+    <span className="text-3xl mb-2">{icon}</span>
+    <span className="text-2xl font-bold">{value ?? 0}</span>
+    <span className="text-gray-500 text-sm">{label}</span>
+  </div>
+);
+
+/* ---------------- Main ---------------- */
 const Dashboard = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { user } = useSelector((state) => state.user);
   const { dashboard, loading, error } = useSelector((state) => state.data);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchDashboardData());
-  }, []);
-  console.log(dashboard);
+  }, [dispatch]);
+
+  /* ---------------- States ---------------- */
+  if (loading) return <DashboardSkeleton />;
+  if (error) return <ErrorUI error={error} />;
+
+  /* ---------------- Safe Data ---------------- */
+  const summary = dashboard?.summary || {};
+  const activity = dashboard?.activity || [];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-50 p-6 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 p-6">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10">
-        <h1 className="text-4xl font-extrabold text-gray-800">
-          EcoGoals 🌱
-          <span className="block sm:inline text-green-500 text-lg font-medium ml-2">
-            Sustainable Habits Tracker
-          </span>
-        </h1>
-        <div className="mt-3 sm:mt-0 px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-semibold shadow-sm">
-          🔥 7 Day Streak
+        <h1 className="text-3xl font-bold text-gray-800">Eco Dashboard 🌱</h1>
+
+        <div className="px-4 py-2 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
+          🔥 {summary.activeStreak ?? 0} Day Streak
         </div>
       </div>
+
+      {/* Welcome */}
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-1">
-          Welcome back, {user.title}!
+        <h2 className="text-xl font-semibold">
+          Welcome back, {user?.name || "User"} 👋
         </h2>
-        <p className="text-gray-500">
-          Here’s your eco-friendly progress overview:
-        </p>
+        <p className="text-gray-500">Track your sustainable progress</p>
       </div>
+
+      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center hover:shadow-lg transition">
-          <span className={`text-3xl mb-2 $`}>🌱</span>
-          <span className="text-2xl font-bold">
-            {dashboard.summary.activeStreak}
-          </span>
-          <span className="text-gray-500 text-sm">Current Streak</span>
-        </div>
-        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center hover:shadow-lg transition">
-          <span className={`text-3xl mb-2 $`}>✅</span>
-          <span className="text-2xl font-bold">
-            {dashboard.summary.totalCompletions}
-          </span>
-          <span className="text-gray-500 text-sm">Habits Completed</span>
-        </div>
-        <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center hover:shadow-lg transition">
-          <span className={`text-3xl mb-2 $`}>🏆</span>
-          <span className="text-2xl font-bold">
-            {dashboard.activity.length}
-          </span>
-          <span className="text-gray-500 text-sm">Badges Earned</span>
-        </div>
+        <StatCard
+          icon="🌱"
+          value={summary.activeStreak}
+          label="Current Streak"
+        />
+        <StatCard
+          icon="✅"
+          value={summary.totalCompletions}
+          label="Habits Completed"
+        />
+        <StatCard icon="🏆" value={activity.length} label="Badges Earned" />
+        <StatCard
+          icon="📈"
+          value={summary.completionRate}
+          label="Completion Rate %"
+        />
       </div>
 
-      {/* Chart Section */}
+      {/* Chart */}
       <div className="bg-white rounded-2xl shadow-md p-6 mb-12">
-        <h2 className="text-xl font-bold mb-4 text-gray-800">
-          Weekly Progress
-        </h2>
-        <Chart />
+        <h2 className="text-lg font-semibold mb-4">Weekly Progress</h2>
+        <Chart data={dashboard?.weeklyData || []} />
       </div>
 
-      {/* Achievements */}
+      {/* Achievements Preview */}
       <div className="mb-12">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-800">Achievements</h2>
-          <Link
-            to="/achievements"
-            className="text-green-600 hover:underline font-medium cursor-pointer"
-          >
-            View All
+        <div className="flex justify-between mb-6">
+          <h2 className="text-lg font-semibold">Achievements</h2>
+          <Link to="/achievements" className="text-green-600">
+            View All →
           </Link>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
-          {achievements.map((a) => (
-            <div
-              key={a.name}
-              className={`p-6 rounded-xl shadow-sm flex flex-col items-center hover:shadow-md transition ${a.color}`}
-            >
-              <span className="text-3xl mb-2">{a.icon}</span>
-              <span className="font-semibold text-gray-800">{a.name}</span>
-              {a.achieved && (
-                <span className="text-green-600 text-sm font-medium mt-1">
-                  ✓ Achieved
-                </span>
-              )}
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {activity.slice(0, 4).map((a, i) => (
+            <div key={i} className="bg-white p-4 rounded-xl shadow">
+              <p className="text-sm font-medium">{a.title || "Badge"}</p>
+              <p className="text-xs text-gray-500">{a.points || 0} pts</p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Action Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      {/* Actions */}
+      <div className="grid md:grid-cols-3 gap-6 mb-12">
         <div
-          className="bg-linear-to-r from-green-400 to-green-600 text-white rounded-xl p-6 shadow hover:shadow-lg transition cursor-pointer"
-          onClick={() => navigate("/track")}
+          onClick={() => navigate("/myhabit")}
+          className="bg-green-500 text-white p-6 rounded-xl cursor-pointer"
         >
-          <h3 className="font-semibold mb-1">✓ Track Today’s Habits</h3>
-          <p className="text-green-100 text-sm">
-            Check off your daily eco-friendly actions
-          </p>
+          Track Today’s Habits
         </div>
-        <div className="bg-blue-50 text-blue-800 rounded-xl p-6 shadow hover:shadow-md transition">
-          <h3 className="font-semibold mb-1">👥 Join Community</h3>
-          <p className="text-blue-500 text-sm">
-            Share progress and get inspired by others
-          </p>
+
+        <div
+          onClick={() => navigate("/community")}
+          className="bg-blue-100 p-6 rounded-xl cursor-pointer"
+        >
+          Join Community
         </div>
-        <div className="bg-yellow-50 text-yellow-800 rounded-xl p-6 shadow hover:shadow-md transition">
-          <h3 className="font-semibold mb-1">🔗 Share Progress</h3>
-          <p className="text-yellow-500 text-sm">
-            Inspire friends on social media
-          </p>
+
+        <div
+          onClick={handleShare}
+          className="bg-yellow-100 p-6 rounded-xl cursor-pointer"
+        >
+          Share Progress
         </div>
       </div>
 
-      {/* Tip Box */}
-      <div className="bg-green-100 border border-green-300 rounded-xl p-5 flex items-start shadow-sm">
-        <span className="text-2xl mr-3">💡</span>
-        <div>
-          <b className="block mb-1">Tip</b>
-          <p className="text-gray-700">
-            Focus on improving your transport habits to reach the next level!
-          </p>
-        </div>
+      {/* Tip */}
+      <div className="bg-green-100 p-4 rounded-xl">
+        <b>Tip:</b> Stay consistent — small habits compound.
       </div>
     </div>
   );

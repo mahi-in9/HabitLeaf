@@ -11,11 +11,12 @@ import {
   markHabitComplete,
 } from "../app/slices/habbitSlice";
 import ModalForm from "../components/ModalForm";
+import { HabitLoader } from "../components/Loader";
 
 const MyHabit = () => {
   const { habits, loading, error } = useSelector((state) => state.habit);
   const { user } = useSelector((state) => state.user);
-  const { data } = useSelector((state) => state.data);
+  const { data, dataLoading } = useSelector((state) => state.data);
 
   const dispatch = useDispatch();
 
@@ -27,14 +28,10 @@ const MyHabit = () => {
     dispatch(markHabitComplete(e));
   };
 
-  if (loading)
-    return (
-      <main className="min-w-screen">
-        <p>Loading...</p>
-      </main>
-    );
+  if (loading) return <HabitLoader />;
 
   if (error) return <p>{error}</p>;
+  console.log(data);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-100 via-green-50 to-emerald-100 p-6">
@@ -58,22 +55,28 @@ const MyHabit = () => {
         {/* Add Habit */}
 
         {/* Progress Section */}
+
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
           <div className="bg-white rounded-2xl shadow-lg p-6 text-center">
             <p className="text-3xl font-bold text-green-600">
-              {data?.completedToday}
+              {dataLoading && <img src="loader.svg" alt="loader" />}
+              {data?.totalToday}
             </p>
             <p className="text-gray-500 mt-1">Today's Progress</p>
           </div>
           <div className="bg-white rounded-2xl shadow-lg p-6 text-center flex flex-col items-center">
             <Flame className="text-orange-500 mb-2 w-6 h-6" />
-            <p className="text-gray-500">{data?.bestStreak} Best Streak</p>
+            <p className="text-gray-500">
+              {dataLoading && <img src="loader.svg" alt="loader" />}
+              {data?.bestStreak} Best Streak
+            </p>
             <p className="font-semibold"> days in a row</p>
           </div>
           <div className="bg-white rounded-2xl shadow-lg p-6 text-center flex flex-col items-center">
             <Calendar className="text-blue-500 mb-2 w-6 h-6" />
             <p className="text-gray-500">This Week</p>
             <p className="font-semibold">
+              {dataLoading && <img src="loader.svg" alt="loader" />}2
               {data?.weeklyCompleted} habits completed
             </p>
           </div>

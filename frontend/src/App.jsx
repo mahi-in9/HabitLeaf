@@ -17,9 +17,12 @@ import { useDispatch } from "react-redux";
 import { fetchUser } from "./app/slices/userSlice";
 import { getDashboardData } from "./app/slices/dashboardSlice";
 import Protected from "./components/Protected";
-import { evaluateAchievements } from "./app/slices/achievementSlice";
+import PageLoader from "./components/Loader";
+import { useSelector } from "react-redux";
 
 function App() {
+  const { loading, user } = useSelector((state) => state.user);
+
   const dispatch = useDispatch();
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -34,6 +37,7 @@ function App() {
     <div className="min-h-screen bg-gray-100">
       <Navbar />
       <div className="p-1 ">
+        {loading && <PageLoader />}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
