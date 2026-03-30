@@ -45,14 +45,14 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.user);
-  const { dashboard, loading, error } = useSelector((state) => state.data);
+  const { dashboard, dataLoading, error } = useSelector((state) => state.data);
 
   useEffect(() => {
     dispatch(fetchDashboardData());
   }, [dispatch]);
 
   /* ---------------- States ---------------- */
-  if (loading) return <DashboardSkeleton />;
+  if (dataLoading) return <DashboardSkeleton />;
   if (error) return <ErrorUI error={error} />;
 
   /* ---------------- Safe Data ---------------- */

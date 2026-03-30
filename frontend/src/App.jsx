@@ -36,8 +36,8 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
+      {loading && <PageLoader />}
       <div className="p-1 ">
-        {loading && <PageLoader />}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />

@@ -1,10 +1,15 @@
-import React from 'react';
-import HeroSection from '../components/HeroSection';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import HeroSection from "../components/HeroSection";
+import { useNavigate } from "react-router-dom";
 import { CheckSquare, Calendar, Trophy } from "lucide-react";
+import PageLoader from "../components/Loader";
+import { useSelector } from "react-redux";
 
 const Home = () => {
-  const navigate = useNavigate(); 
+  const { loading, user } = useSelector((state) => state.user);
+
+  const navigate = useNavigate();
+  if (loading) return <></>;
 
   const features = [
     {
@@ -53,9 +58,12 @@ const Home = () => {
       </div>
 
       <div className="bg-green-700 py-12 text-center">
-        <h1 className="text-5xl font-bold text-white">Join the HabbitLeaf Community</h1>
+        <h1 className="text-5xl font-bold text-white">
+          Join the HabbitLeaf Community
+        </h1>
         <p className="text-gray-200 text-xl mt-4">
-          Connect with like-minded individuals, share your progress, and inspire each other to live more sustainably.
+          Connect with like-minded individuals, share your progress, and inspire
+          each other to live more sustainably.
         </p>
 
         <div className="flex flex-col md:flex-row justify-center gap-8 mt-10 px-4 md:px-0">
@@ -90,14 +98,12 @@ const Home = () => {
           </div>
         </div>
 
-
         <button
-          onClick={() => navigate('/community')}
+          onClick={() => navigate("/community")}
           className="mt-10 px-8 py-3 bg-white text-green-700 text-lg font-semibold rounded-full shadow transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer hover:bg-green-50"
         >
           Join Community →
         </button>
-
       </div>
     </div>
   );
