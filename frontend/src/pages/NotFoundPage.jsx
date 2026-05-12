@@ -7,8 +7,8 @@ export default function NotFoundPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center mt-5 bg-green-50 px-4">
       <div className="relative bg-white rounded-3xl shadow-2xl p-10 md:p-16 text-center max-w-xl w-full overflow-hidden">
-        <div className="absolute -top-24 -right-24 w-64 h-64 bg-gradient-to-r from-green-400 to-green-600 rounded-full opacity-30"></div>
-        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-gradient-to-r from-green-300 to-green-500 rounded-full opacity-30"></div>
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-linear-to-r from-green-400 to-green-600 rounded-full opacity-30"></div>
+        <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-linear-to-r from-green-300 to-green-500 rounded-full opacity-30"></div>
         <div className="mb-6">
           <svg
             xmlns="http://www.w3.org/2000/svg"

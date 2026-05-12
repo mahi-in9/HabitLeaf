@@ -56,7 +56,7 @@ const Home = () => {
       </div>
 
       {/* AI Feature highlight banner */}
-      <div className="mx-6 md:mx-16 mb-12 rounded-2xl bg-gradient-to-r from-green-600 to-emerald-500 p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="mx-6 md:mx-16 mb-12 rounded-2xl bg-linear-to-r from-green-600 to-emerald-500 p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="text-white">
           <div className="flex items-center gap-2 mb-2">
             <Sparkles className="w-5 h-5" />

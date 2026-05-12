@@ -31,7 +31,7 @@ export const HabitLoader = () => (
 
 const PageLoader = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-br from-green-50 to-emerald-100">
       {/* Logo / Identity */}
       <div className="flex items-center gap-2 mb-6">
         <div className="w-10 h-10 bg-green-500 rounded-full animate-bounce"></div>

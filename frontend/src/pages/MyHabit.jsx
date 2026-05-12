@@ -61,7 +61,7 @@ const MyHabit = () => {
   ).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50 pt-20 pb-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-50 pt-20 pb-12 px-4">
       <div className="max-w-6xl mx-auto">
 
         {/* Header */}
@@ -228,7 +228,7 @@ const MyHabit = () => {
         )}
 
         {/* Bottom motivation banner */}
-        <div className="mt-8 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 p-8 flex flex-col md:flex-row items-center justify-between text-white gap-4">
+        <div className="mt-8 rounded-2xl bg-linear-to-r from-green-500 to-emerald-600 p-8 flex flex-col md:flex-row items-center justify-between text-white gap-4">
           <div>
             <h2 className="text-xl font-bold mb-1">Keep it up! 🌱</h2>
             <p className="text-green-100 text-sm">

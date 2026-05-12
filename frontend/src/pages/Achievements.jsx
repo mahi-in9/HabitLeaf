@@ -53,7 +53,7 @@ const Achievements = () => {
   console.log(achievements);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 mt-18">
+    <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100 mt-18">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <div className="flex items-center space-x-2 mb-2">

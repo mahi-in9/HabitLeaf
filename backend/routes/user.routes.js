@@ -5,6 +5,7 @@ const authMiddleware = require("../middlewares/auth.middleware").protect;
 const {
   getAllUser,
   searchUser,
+  
 } = require("../controllers/communityController");
 
 // Allow all authenticated users to get doctors
