@@ -1,6 +1,6 @@
 const getDashboard = require("../controllers/dashboard.controller");
 
-const authMidleware = require("../middlewares/auth.middleware");
+const authMidleware = require("../middlewares/auth.middleware").protect;
 
 const expres = require("express");
 

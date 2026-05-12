@@ -7,7 +7,7 @@ const {
   getAchievementStats,
 } = require("../controllers/achievement.controller");
 
-const authMiddleware = require("../middlewares/auth.middleware");
+const authMiddleware = require("../middlewares/auth.middleware").protect;
 
 router.use(authMiddleware);
 

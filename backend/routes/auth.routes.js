@@ -6,7 +6,7 @@ const {
   getUser,
   forgotPasswordControllers,
 } = require("../controllers/auth.controller");
-const authMiddleware = require("../middlewares/auth.middleware");
+const authMiddleware = require("../middlewares/auth.middleware").protect;
 
 const router = express.Router();
 

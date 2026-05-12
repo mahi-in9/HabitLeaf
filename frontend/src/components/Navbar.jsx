@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Link, NavLink } from "react-router-dom";
+import { Menu, X, Sparkles } from "lucide-react";
 import leaf from "../assets/leaf.svg";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../app/slices/userSlice";
 
@@ -16,110 +15,104 @@ const Navbar = () => {
   const navLinks = [
     { path: "/dashboard", label: "Dashboard" },
     { path: "/myhabit", label: "My Habits" },
-    { path: "/community", label: "Community" },
+    { path: "/ai-advisor", label: "AI Advisor", isNew: true },
     { path: "/achievements", label: "Achievements" },
+    { path: "/community", label: "Community" },
   ];
 
+  const handleLogout = () => {
+    localStorage.clear();
+    dispatch(logout());
+    setIsOpen(false);
+    navigate("/login");
+  };
+
   return (
-    <nav className="py-4 px-6 bg-white shadow-sm fixed top-0 left-0 w-full z-50">
+    <nav className="py-3 px-6 bg-white shadow-sm fixed top-0 left-0 w-full z-50">
       <div className="flex justify-between items-center max-w-7xl mx-auto">
-        <div className="flex items-center space-x-3">
-          <img src={leaf} alt="logo" className="w-10 h-10 text-gray-900 " />
-          <div className="transition transform hover:scale-x-105">
-            <Link to="/">
-              <h1 className="text-gray-900 font-bold text-xl text-shadow-xs ">
-                HabitLeaf
-              </h1>
-              <p className="text-green-500 text-sm -mt-1">
-                Sustainable Habits Tracker
-              </p>
-            </Link>
-          </div>
+        <div className="flex items-center space-x-2">
+          <img src={leaf} alt="logo" className="w-9 h-9" />
+          <Link to="/" className="hover:opacity-90 transition-opacity">
+            <h1 className="text-gray-900 font-bold text-lg leading-tight">HabitLeaf</h1>
+            <p className="text-green-500 text-xs -mt-0.5">Sustainable Habits Tracker</p>
+          </Link>
         </div>
-        <div className="hidden md:flex space-x-8">
+
+        <div className="hidden md:flex items-center space-x-6">
           {navLinks.map((link) => (
-            <Link
+            <NavLink
               key={link.path}
               to={link.path}
               className={({ isActive }) =>
-                `hover:text-green-600 ${
-                  isActive ? "text-green-600 font-semibold" : "text-gray-600"
+                `text-sm flex items-center gap-1 transition-colors ${
+                  isActive ? "text-green-600 font-semibold" : "text-gray-600 hover:text-green-600"
                 }`
               }
             >
+              {link.isNew && <Sparkles className="w-3.5 h-3.5 text-green-500" />}
               {link.label}
-            </Link>
+              {link.isNew && (
+                <span className="ml-1 text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full font-medium">
+                  AI
+                </span>
+              )}
+            </NavLink>
           ))}
         </div>
-        <div className="hidden md:flex items-center space-x-4">
-          <button className="bg-green-100 text-green-700 px-4 py-2 rounded-full flex items-center space-x-2 hover:bg-green-200 transition">
-            <span>🔥</span>
-            <span>create streak</span>
-          </button>
 
+        <div className="hidden md:flex items-center space-x-3">
           {!user ? (
             <Link to="/login">
-              <button className="bg-green-600 text-white px-6 transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer  py-2 rounded-full hover:bg-green-700">
+              <button className="bg-green-600 text-white px-5 py-2 text-sm rounded-full hover:bg-green-700 transition-colors">
                 Sign In
               </button>
             </Link>
           ) : (
             <button
-              onClick={() => {
-                localStorage.clear();
-                dispatch(logout());
-                navigate("/login");
-              }}
-              className="bg-red-600 text-white px-6 py-2  transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer rounded-full hover:bg-red-700"
+              onClick={handleLogout}
+              className="bg-red-50 text-red-600 border border-red-200 px-5 py-2 text-sm rounded-full hover:bg-red-100 transition-colors"
             >
               Logout
             </button>
           )}
         </div>
-        <div className="md:hidden">
-          <button onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
-        </div>
+
+        <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
+          {isOpen ? <X size={26} /> : <Menu size={26} />}
+        </button>
       </div>
+
       {isOpen && (
-        <div className="md:hidden bg-white shadow-lg mt-4 rounded-lg p-4 space-y-4">
+        <div className="md:hidden bg-white border-t border-gray-100 mt-3 py-4 px-4 space-y-2">
           {navLinks.map((link) => (
-            <Link
+            <NavLink
               key={link.path}
               to={link.path}
               onClick={() => setIsOpen(false)}
               className={({ isActive }) =>
-                `block hover:text-green-600 ${
-                  isActive ? "text-green-600 font-semibold" : "text-gray-600"
+                `flex items-center gap-2 py-2 px-3 rounded-lg text-sm ${
+                  isActive ? "bg-green-50 text-green-600 font-semibold" : "text-gray-600 hover:bg-gray-50"
                 }`
               }
             >
+              {link.isNew && <Sparkles className="w-3.5 h-3.5 text-green-500" />}
               {link.label}
-            </Link>
+              {link.isNew && (
+                <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full font-medium">AI</span>
+              )}
+            </NavLink>
           ))}
-
-          <div className="border-t pt-4 flex flex-col space-y-3">
-            <button className="bg-green-100 text-green-700 px-4 py-2 rounded-full flex items-center justify-center space-x-2 hover:bg-green-200 transition">
-              <span>🔥</span>
-              <span>7 day streak</span>
-            </button>
-
+          <div className="border-t border-gray-100 pt-3 mt-2">
             {!user ? (
               <Link to="/login" onClick={() => setIsOpen(false)}>
-                <button className="w-full bg-green-600 transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer  text-white px-6 py-2 rounded-full hover:bg-green-700">
+                <button className="w-full bg-green-600 text-white py-2.5 rounded-full text-sm font-medium hover:bg-green-700 transition-colors">
                   Sign In
                 </button>
               </Link>
             ) : (
               <button
-                onClick={() => {
-                  localStorage.clear();
-                  dispatch(logout());
-                  dispatch(resetAchievements());
-                  navigate("/login");
-                }}
-                className="w-full bg-red-600 text-white transform transition duration-300 hover:scale-105 active:scale-95 cursor-pointer px-6 py-2 rounded-full hover:bg-red-700"
+                onClick={handleLogout}
+                className="w-full bg-red-50 text-red-600 border border-red-200 py-2.5 rounded-full text-sm font-medium hover:bg-red-100 transition-colors"
               >
                 Logout
               </button>

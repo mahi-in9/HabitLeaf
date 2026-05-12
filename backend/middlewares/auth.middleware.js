@@ -1,14 +1,16 @@
-// middlewares/authMiddleware.js
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-const authMiddleware = async (req, res, next) => {
+/**
+ * protect middleware
+ * Verifies the JWT from the Authorization header and attaches req.user.
+ * Throws a proper error for centralized handling instead of inlining error JSON.
+ */
+exports.protect = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res
-      .status(401)
-      .json({ msg: "Authorization token missing or malformed" });
+    return res.status(401).json({ success: false, message: "Not authorised. No token provided." });
   }
 
   const token = authHeader.split(" ")[1];
@@ -16,17 +18,15 @@ const authMiddleware = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+    // Attach the full user object so controllers can use req.user._id consistently
     const user = await User.findById(decoded.id).select("-password");
     if (!user) {
-      return res.status(401).json({ msg: "User not found" });
+      return res.status(401).json({ success: false, message: "User no longer exists." });
     }
 
     req.user = user;
     next();
-  } catch (error) {
-    console.error(error);
-    return res.status(403).json({ msg: "Invalid or expired token" });
+  } catch (err) {
+    next(err); // Passes JWT errors to centralized errorHandler
   }
 };
-
-module.exports = authMiddleware;

@@ -6,7 +6,7 @@ const {
   deleteHabit,
   markHabitComplete,
 } = require("../controllers/habit.controller");
-const authMiddleware = require("../middlewares/auth.middleware");
+const authMiddleware = require("../middlewares/auth.middleware").protect;
 
 const router = express.Router();
 
