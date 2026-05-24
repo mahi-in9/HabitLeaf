@@ -36,7 +36,7 @@ const Signup = () => {
       });
       setMessage(res.message || "Signing up");
       setTimeout(() => {
-        navigate("/");
+        navigate("/login");
       }, 300);
     } catch (error) {
       console.log(error);
